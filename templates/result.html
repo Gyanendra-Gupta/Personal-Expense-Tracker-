@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Budget Summary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes fadeInUp {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+      }
+      .glass {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .glow:hover {
+        box-shadow: 0 0 10px #7c3aed, 0 0 20px #9333ea;
+        transform: scale(1.03);
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 text-gray-800 font-sans min-h-screen flex items-center justify-center p-6"
+  >
+    <div class="glass rounded-3xl p-10 w-full max-w-7xl fade-in-up">
+      <!-- Title -->
+      <h2
+        class="text-5xl font-extrabold text-center bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-transparent bg-clip-text mb-12 drop-shadow-lg"
+      >
+        Budget Summary
+      </h2>
+
+      <!-- Budget Breakdown and Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start mb-12">
+        <!-- Expense Breakdown List -->
+        <div class="col-span-1">
+          <h3 class="text-2xl font-bold mb-5 text-indigo-800">
+            📊 Expense Breakdown
+          </h3>
+          <ul class="space-y-4">
+            {% for category, amount in budget_data.items() %}
+            <li
+              class="flex justify-between items-center bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-xl shadow-sm hover:shadow-md transition duration-300"
+            >
+              <span class="font-semibold text-gray-800">{{ category }}</span>
+              <span class="text-indigo-700 font-bold">₹{{ amount }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="flex flex-col items-center">
+          <h3 class="text-2xl font-bold mb-5 text-indigo-800">📈 Bar Chart</h3>
+          <a
+            href="{{ url_for('static', filename='bar_chart.png') }}"
+            target="_blank"
+          >
+            <img
+              src="{{ url_for('static', filename='bar_chart.png') }}"
+              alt="Bar Chart"
+              class="rounded-xl shadow-xl transform hover:scale-105 transition duration-300 w-full max-w-xs lg:max-w-sm"
+            />
+          </a>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="flex flex-col items-center">
+          <h3 class="text-2xl font-bold mb-5 text-indigo-800">Pie Chart</h3>
+          <a
+            href="{{ url_for('static', filename='pie_chart.png') }}"
+            target="_blank"
+          >
+            <img
+              src="{{ url_for('static', filename='pie_chart.png') }}"
+              alt="Pie Chart"
+              class="rounded-xl shadow-xl transform hover:scale-105 transition duration-300 w-full max-w-xs lg:max-w-sm"
+            />
+          </a>
+        </div>
+      </div>
+
+      <!-- Investment Suggestions -->
+      <div
+        class="mb-10 p-6 bg-gradient-to-r from-green-100 via-emerald-100 to-lime-100 rounded-2xl shadow-lg fade-in-up"
+      >
+        <h3 class="text-2xl font-bold text-green-800 mb-4">
+          📈 Investment Suggestions
+        </h3>
+        <p class="text-gray-900 mb-2">
+          💹 Bitcoin Price:
+          <span class="font-semibold text-green-700">${{ bitcoin_price }}</span>
+        </p>
+        {% for name, symbol, price in stock_data %}
+        <p class="text-gray-900 mb-2">
+          🏦 {{ name }} Stock ({{ symbol }}):
+          <span class="font-semibold text-green-700">${{ price }}</span>
+        </p>
+        {% endfor %}
+        <p class="mt-4 text-sm text-gray-700 italic">
+          If you have surplus funds, consider investing in assets like crypto or
+          stocks. Diversification is essential!
+        </p>
+      </div>
+
+      <!-- Total Savings -->
+      <div
+        class="mb-10 p-6 bg-gradient-to-r from-yellow-100 via-amber-100 to-orange-100 rounded-2xl shadow-lg fade-in-up"
+      >
+        <h3 class="text-2xl font-bold text-yellow-800 mb-3">
+          💸 Total Savings
+        </h3>
+        <p class="text-gray-900 text-lg">
+          You managed to save
+          <span class="font-bold text-green-700 text-2xl">₹{{ savings }}</span>
+          this month!
+        </p>
+      </div>
+
+      <!-- Major Expense -->
+      <div
+        class="mb-10 p-6 bg-gradient-to-r from-rose-100 via-red-100 to-pink-100 rounded-2xl shadow-lg fade-in-up"
+      >
+        <h3 class="text-2xl font-bold text-red-700 mb-3">🔍 Major Expense</h3>
+        <p class="text-gray-900">
+          Your highest spending category is
+          <span class="font-bold">{{ major_expense }}</span>, totaling
+          <span class="font-bold text-red-600">₹{{ major_expense_amt }}</span>.
+        </p>
+      </div>
+
+      <!-- Back Button -->
+      <div class="text-center mt-8">
+        <a
+          href="/"
+          class="inline-block px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full font-semibold glow transition duration-300"
+        >
+          ← Go Back
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
